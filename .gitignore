@@ -2,7 +2,6 @@
 node_modules/
 dist/
 out/
-build/
 
 # Installers and compilers never belong in the repository.
 # Upload installers to GitHub Releases instead.

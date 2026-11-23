@@ -83,7 +83,7 @@ site/                public landing page (deployed with Cloudflare Pages)
 
 ## Publishing (GitHub + Cloudflare Pages)
 
-1. Create a GitHub repository and push this folder. Search the project for `OWNER/REPO` and replace it with
+1. Create a GitHub repository and push this folder. Search the project for `suthapallihareesh/Code-visualiser` and replace it with
    your GitHub user and repository name (it appears in `site/index.html`).
 2. In Cloudflare Pages, connect the repository with **no build command** and the output directory set to `site`.
 3. Upload installers to **GitHub Releases** (not to the repository, and not to Pages: Pages files are limited to 25 MiB,
