@@ -1,0 +1,100 @@
+name: Build installers
+
+# Run it by hand first (Actions tab -> Build installers -> Run workflow) to get test installers as downloadable
+# artifacts. Push a tag such as v1.0.0 to build the same installers and publish them on GitHub Releases.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: windows-x64, os: windows-latest, platform: win32,  arch: x64,   builder: '--win --x64',     verify: true }
+          - { name: linux-x64,   os: ubuntu-latest,  platform: linux,  arch: x64,   builder: '--linux --x64',   verify: true }
+          - { name: mac-arm64,   os: macos-latest,   platform: darwin, arch: arm64, builder: '--mac --arm64',   verify: true }
+          # Built on an Apple-silicon runner, so the Intel compilers cannot be run here to verify them.
+          - { name: mac-x64,     os: macos-latest,   platform: darwin, arch: x64,   builder: '--mac --x64',     verify: false }
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'   # installers are unsigned until you add a signing certificate
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install build tools
+        run: npm ci
+
+      - name: Unit tests for the downloader
+        run: node tests/fetch-logic.js
+
+      - name: Download the real compilers
+        run: node scripts/fetch-toolchains.js --platform=${{ matrix.platform }} --arch=${{ matrix.arch }}
+
+      - name: Verify the bundled compilers
+        if: matrix.verify
+        run: node scripts/verify-bundle.js
+
+      - name: Full accuracy suite on the bundled compilers (Windows)
+        if: matrix.verify && matrix.platform == 'win32'
+        continue-on-error: true   # informational: the gate is the verification step above
+        shell: bash
+        env:
+          CODESTUDIO_ONLY_BUNDLED: '1'
+        run: |
+          export CODESTUDIO_TOOLCHAINS="$PWD/toolchains"
+          node tests/accuracy.js
+
+      - name: Build the installer
+        run: npx electron-builder ${{ matrix.builder }} --publish never
+
+      - name: Checksums
+        shell: bash
+        run: |
+          cd dist
+          for f in *.exe *.dmg *.AppImage *.deb; do
+            [ -f "$f" ] && (sha256sum "$f" 2>/dev/null || shasum -a 256 "$f") >> "SHA256SUMS-${{ matrix.name }}.txt"
+          done
+          cat "SHA256SUMS-${{ matrix.name }}.txt"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer-${{ matrix.name }}
+          if-no-files-found: error
+          path: |
+            dist/*.exe
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.deb
+            dist/SHA256SUMS-*.txt
+
+  release:
+    name: Publish to GitHub Releases
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: installer-*
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true

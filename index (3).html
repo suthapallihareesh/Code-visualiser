@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="studio-token" content="__STUDIO_TOKEN__">
+  <meta name="theme-color" content="#0b1020">
+  <title>Code Studio — Java · C · C++ · Python</title>
+  <style nonce="__STUDIO_NONCE__">
+{{CSS}}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">CS</div>
+        <div>
+          <div class="brand-name">Code Studio</div>
+          <div class="brand-subtitle">LOCAL IDE · REAL COMPILERS · OFFLINE</div>
+        </div>
+      </div>
+      <nav id="langSwitch" class="lang-switch" aria-label="Language"></nav>
+      <div class="topbar-right">
+        <button id="connectionBadge" type="button" class="status-pill checking" title="Click to re-check installed compilers"><i></i><span>Checking local toolchains…</span></button>
+        <button id="importBtn" class="button subtle" title="Import a project bundle (.json)">Import</button>
+        <button id="exportBtn" class="button subtle" title="Export all source files">Export project</button>
+        <input id="importInput" type="file" accept="application/json,.json" hidden>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar panel">
+        <div class="panel-heading"><div><span class="eyebrow">WORKSPACE</span><h2 id="filesHeading">Files</h2></div><button id="newFileBtn" class="icon-button" title="New file">＋</button></div>
+        <div id="fileList" class="file-list" aria-label="Source files"></div>
+        <div class="sidebar-note"><span class="dot green"></span><span>Files are kept in this browser until you export them.</span></div>
+        <div class="sidebar-bottom"><div class="jdk-chip"><span id="chipIcon">☕</span> <span id="chipText">Toolchain</span></div><div class="offline-label">No cloud compiler · No API quota</div></div>
+      </aside>
+
+      <section class="editor-column">
+        <section class="editor-panel panel">
+          <div class="editor-toolbar">
+            <div class="file-context"><span id="fileBadge" class="java-icon">J</span><strong id="activeFileName">Main.java</strong><span id="dirtyMark" class="dirty-mark" hidden>●</span></div>
+            <div class="editor-actions">
+              <span id="mainClassGroup" class="editor-actions">
+                <label class="main-class-label" for="mainClassInput">Main class</label>
+                <input id="mainClassInput" class="main-class-input" value="Main" spellcheck="false" aria-label="Main class">
+              </span>
+              <span id="entryGroup" class="editor-actions" hidden>
+                <label class="main-class-label" for="entrySelect">Entry file</label>
+                <select id="entrySelect" class="tool-select" aria-label="Entry file"></select>
+              </span>
+              <span id="stdGroup" class="editor-actions" hidden>
+                <label class="main-class-label" for="stdSelect">Standard</label>
+                <select id="stdSelect" class="tool-select" aria-label="Language standard"></select>
+                <label id="sanitizeLabel" class="check-label" title="Build with AddressSanitizer and UndefinedBehaviorSanitizer to catch memory bugs at run time" hidden><input id="sanitizeInput" type="checkbox"> Memory checks</label>
+              </span>
+              <button id="compileBtn" class="button secondary">Compile</button>
+              <button id="runBtn" class="button primary"><span>▶</span> Run</button>
+              <button id="stopBtn" class="button danger" disabled>■ Stop</button>
+            </div>
+          </div>
+          <div class="editor-wrap">
+            <div id="lineNumbers" class="line-numbers" aria-hidden="true">1</div>
+            <div class="code-stack">
+              <pre id="codeHighlight" class="code-highlight" aria-hidden="true"></pre>
+              <textarea id="codeEditor" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Source editor"></textarea>
+            </div>
+          </div>
+          <div class="editor-footer"><span id="editorInfo">Java · UTF-8</span><span id="compileStatus">Ready to compile</span></div>
+        </section>
+
+        <section class="console-panel panel">
+          <div class="console-header"><div><span class="eyebrow">PROGRAM OUTPUT</span><h2>Console</h2></div><div class="console-tools"><span id="runtimeState" class="runtime-state">Idle</span><button id="clearConsoleBtn" class="text-button">Clear</button></div></div>
+          <pre id="consoleOutput" class="console-output" aria-live="polite">Your program output will appear here.</pre>
+          <form id="stdinForm" class="stdin-row">
+            <span class="stdin-prefix">&gt;_</span>
+            <input id="stdinInput" type="text" maxlength="16384" placeholder="Type input for your program, then press Enter…" autocomplete="off" disabled>
+            <button class="button secondary" type="submit" id="sendInputBtn" disabled>Send input</button>
+            <button class="button subtle" type="button" id="finishInputBtn" disabled title="Close standard input (Ctrl+D)">EOF</button>
+          </form>
+        </section>
+
+        <section id="diagnosticsPanel" class="diagnostics-panel panel" hidden>
+          <div class="console-header"><div><span id="diagEyebrow" class="eyebrow">COMPILER REPORT</span><h2>Diagnostics</h2></div><span id="diagnosticCount" class="count-pill">0</span></div>
+          <div id="diagnosticsList" class="diagnostics-list"></div>
+        </section>
+      </section>
+
+      <aside class="trace-column panel">
+        <div class="trace-heading"><div><span id="traceEyebrow" class="eyebrow">REAL JAVAC CALLBACKS</span><h2>Compiler walkthrough</h2></div><span class="trace-live"><i></i> LOCAL TRACE</span></div>
+        <p class="trace-intro" id="traceIntro">Step through the phases the compiler actually reports. Select a step to understand what happens and why.</p>
+        <div class="trace-controls">
+          <button id="firstStepBtn" class="trace-control" title="First step" disabled>⏮</button>
+          <button id="previousStepBtn" class="trace-control" title="Previous step" disabled>◀</button>
+          <button id="autoStepBtn" class="trace-control auto" disabled>▶ Auto</button>
+          <button id="pauseStepBtn" class="trace-control" disabled>Ⅱ Pause</button>
+          <button id="nextStepBtn" class="trace-control" title="Next step" disabled>▶</button>
+          <button id="lastStepBtn" class="trace-control" title="Last step" disabled>⏭</button>
+        </div>
+        <div class="trace-progress-row"><span id="traceCounter">No trace yet</span><span id="tracePercent">0%</span></div>
+        <div class="progress-track"><div id="traceProgress" class="progress-fill"></div></div>
+        <div id="traceList" class="trace-list"><div class="trace-empty"><div class="trace-empty-icon">⌁</div><strong>Waiting for compilation</strong><span>Compile your program to capture the real compiler steps.</span></div></div>
+        <div class="step-explainer">
+          <div class="explainer-top"><span class="eyebrow">STEP EXPLAINER</span><span id="stepPhase" class="phase-tag">NO STEP</span></div>
+          <h3 id="stepTitle">No compiler step selected</h3>
+          <p id="stepExplanation">After compilation, choose any recorded step. The explanation tells you what the real compiler did and why.</p>
+          <div id="stepSource" class="step-detail step-source" hidden></div>
+          <pre id="stepSnippet" class="step-snippet" hidden></pre>
+        </div>
+        <div class="trace-footnote"><span class="info-icon">i</span><span id="traceFootnote"></span></div>
+      </aside>
+    </main>
+
+    <footer class="bottom-bar"><span><i class="dot green"></i> <span id="footerStatus">Connecting to Code Studio…</span></span><span>Runs on this computer · No internet required after setup</span></footer>
+  </div>
+
+  <dialog id="trustDialog" class="trust-dialog">
+    <div class="dialog-mark">!</div>
+    <h2>Run this code on this computer?</h2>
+    <p>Programs run with your account's permissions. They may read or change files you can access, use the network, and start other programs. The IDE applies runtime, memory and output limits, but it is <strong>not an operating-system sandbox</strong>.</p>
+    <p>Only run source code and libraries you trust.</p>
+    <label class="trust-check"><input id="trustRemember" type="checkbox"> Don't ask again until I close this tab</label>
+    <div class="dialog-actions"><button id="cancelRunBtn" class="button subtle">Cancel</button><button id="confirmRunBtn" class="button primary">I trust this code · Continue</button></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script nonce="__STUDIO_NONCE__">
+(() => {
+'use strict';
+{{JS}}
+})();
+  </script>
+</body>
+</html>

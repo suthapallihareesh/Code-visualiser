@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Code Studio shows how Java, C, C++ and Python code is compiled and run, using the real compilers on your own computer. Works offline.">
+  <title>Code Studio — see how your code really compiles and runs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top"><span class="mark">CS</span><span>Code Studio</span></a>
+    <nav aria-label="Page sections">
+      <a href="#download">Download</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <p class="eyebrow">Real compilers · Runs offline · Free</p>
+      <h1>See how your code<br><span class="grad">really compiles and runs.</span></h1>
+      <p class="lead">Write Java, C, C++ or Python and watch the actual compiler work, step by step. Nothing is simulated: the real tools run on your own computer.</p>
+      <div class="cta">
+        <a id="primaryDownload" class="btn primary" href="https://github.com/OWNER/REPO/releases/latest">Download for your computer</a>
+        <a class="btn ghost" href="#how">How it works</a>
+      </div>
+      <p class="hint" id="osHint">Windows, macOS and Linux</p>
+    </section>
+
+    <section class="features" aria-label="What you get">
+      <article class="card"><h3>Four languages</h3><p>Java 21, C, C++ and Python, each compiled and run by its genuine compiler.</p></article>
+      <article class="card"><h3>Compiler walkthrough</h3><p>Step through the phases the compiler reports and read what each one does and why.</p></article>
+      <article class="card"><h3>Clear errors</h3><p>The compiler's own messages with the exact line and column. Click one to jump to it.</p></article>
+      <article class="card"><h3>Works offline</h3><p>After you install it, no internet is needed. Your code stays on your computer.</p></article>
+    </section>
+
+    <section id="download" class="section">
+      <h2>Download</h2>
+      <p class="sub">Windows: the installer includes every compiler, so there is nothing else to set up. macOS and Linux: Java and Python are included; C and C++ use the compiler your computer already has (see the questions below).</p>
+      <div class="os-grid">
+        <a class="os" data-os="windows" href="https://github.com/OWNER/REPO/releases/latest"><strong>Windows</strong><span>Windows 10 or newer</span></a>
+        <a class="os" data-os="mac" href="https://github.com/OWNER/REPO/releases/latest"><strong>macOS</strong><span>Apple silicon and Intel</span></a>
+        <a class="os" data-os="linux" href="https://github.com/OWNER/REPO/releases/latest"><strong>Linux</strong><span>AppImage and .deb</span></a>
+      </div>
+      <p class="note">The download is large because it contains the full, unmodified compilers. It is a one-time download.</p>
+    </section>
+
+    <section id="how" class="section">
+      <h2>How it works</h2>
+      <ol class="steps">
+        <li><span class="num">1</span><div><h3>Download and install</h3><p>Run the installer. It places Code Studio on your computer like any other app.</p></div></li>
+        <li><span class="num">2</span><div><h3>Open it from your Start menu or Applications folder</h3><p>Pin it to your taskbar or dock so it is one click away.</p></div></li>
+        <li><span class="num">3</span><div><h3>Write code and run it</h3><p>Pick a language, press Run, and open the compiler walkthrough to see each step.</p></div></li>
+      </ol>
+    </section>
+
+    <section id="faq" class="section">
+      <h2>Questions</h2>
+      <details><summary>Do I need to install Java, GCC or Python myself?</summary><p><strong>Windows:</strong> no, all of them are included. <strong>macOS and Linux:</strong> Java and Python are included. For C and C++ you need the compiler that comes with your system: on macOS run <code>xcode-select --install</code> once, on Linux install <code>build-essential</code> (or your distribution's equivalent). Code Studio tells you if it is missing.</p></details>
+      <details><summary>Does it need internet?</summary><p>Only to download it. Compiling and running happen on your computer with no connection.</p></details>
+      <details><summary>Why can't I just use it in the browser?</summary><p>A web page cannot start real compilers on your computer. That is why Code Studio is an app you install, so the results come from the genuine tools.</p></details>
+      <details><summary>Windows says "Windows protected your PC".</summary><p>This warning appears for apps from small publishers. Choose <em>More info</em>, then <em>Run anyway</em>, if you downloaded the installer from this project's official release page.</p></details>
+      <details><summary>macOS says the app is damaged or from an unidentified developer.</summary><p>The app is not signed with an Apple developer certificate yet. Open the Applications folder, right-click Code Studio, choose <em>Open</em>, then confirm. If macOS still refuses, run <code>xattr -dr com.apple.quarantine /Applications/&quot;Code Studio.app&quot;</code> in Terminal.</p></details>
+      <details><summary>Is my code uploaded anywhere?</summary><p>No. Your code stays on your computer.</p></details>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Code Studio</span>
+    <a href="https://github.com/OWNER/REPO">Source code on GitHub</a>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+{
+  "name": "code-studio",
+  "productName": "Code Studio",
+  "version": "1.0.0",
+  "description": "See how Java, C, C++ and Python code is compiled and run, using the real compilers. Works offline.",
+  "author": "Hareesh Suthapalli",
+  "license": "MIT",
+  "private": true,
+  "main": "electron/main.js",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "app": "electron .",
+    "toolchains": "node scripts/fetch-toolchains.js",
+    "verify:bundle": "node scripts/verify-bundle.js",
+    "test": "node tests/fetch-logic.js && node tests/accuracy.js && node tests/compare-native.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "io.codestudio.app",
+    "productName": "Code Studio",
+    "asar": false,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "electron/**",
+      "server.js",
+      "lib/**",
+      "helpers/**",
+      "ui/**",
+      "package.json",
+      "LICENSE"
+    ],
+    "extraResources": [
+      {
+        "from": "toolchains",
+        "to": "toolchains"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Code-Studio-Setup-${version}-win-x64.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "artifactName": "Code-Studio-${version}-mac-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Education",
+      "maintainer": "Hareesh Suthapalli",
+      "artifactName": "Code-Studio-${version}-linux-${arch}.${ext}",
+      "syncDesktopName": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OWNER/REPO.git"
+  },
+  "desktopName": "code-studio.desktop"
+}
